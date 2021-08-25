@@ -34,6 +34,7 @@ class Server {
 
 		//Acceso al body - Leer y parsear
 		this.app.use(express.json());
+		this.app.use(express.urlencoded({ extended: true }));
 	}
 
 	routes() {
