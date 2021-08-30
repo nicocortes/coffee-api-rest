@@ -2,9 +2,18 @@ const { request, response } = require("express");
 const Usuario = require("../models/usuario");
 const bcrypt = require("bcryptjs");
 
-const usuariosGet = (req = request, res = response) => {
+const usuariosGet = async (req = request, res = response) => {
+	let { limite = 10, desde = 0 } = req.query;
+	limite = Number(limite);
+	desde = Number(desde);
+
+	const usuarios = await Usuario.find({ estado: true })
+		.limit(limite)
+		.skip(desde);
+	const total = await Usuario.countDocuments({ estado: true });
 	res.json({
-		msg: "GET usuarios",
+		Total: total,
+		usuarios,
 	});
 };
 
@@ -42,9 +51,13 @@ const usuariosPut = async (req = request, res = response) => {
 };
 
 const usuariosDelete = async (req = request, res = response) => {
-	const id = req.params.id;
+	const { id } = req.params;
 	// const usuario = await Usuario.findByIdAndDelete(id); Para borrar definitivamente
-	const usuario = await Usuario.findByIdAndUpdate(id, { estado: false });
+	const usuario = await Usuario.findByIdAndUpdate(
+		id,
+		{ estado: false },
+		{ new: true }
+	);
 
 	res.send({
 		msg: "Delete usuarios",

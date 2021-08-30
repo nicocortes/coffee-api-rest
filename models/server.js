@@ -9,6 +9,7 @@ class Server {
 		//Inicialicen cuando se levante el server
 		this.app = express(); //Asigno a app todas las funcionalidades de Express
 		this.usuariosPath = "/api/usuarios";
+		this.authPath = "/api/auth";
 
 		//Conexion DB
 		this.conectarDB();
@@ -38,6 +39,7 @@ class Server {
 	}
 
 	routes() {
+		this.app.use(this.authPath, require("../routes/auth"));
 		this.app.use(this.usuariosPath, require("../routes/usuarios"));
 	}
 
